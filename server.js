@@ -11,14 +11,19 @@ const PORT = process.env.PORT || 3001;
 
 mongoose.connect('mongodb://localhost:27017/canofbooks', {useNewUrlParser: true, useUnifiedTopology: true});
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  console.log('mongoose is connected!!!!');
-})
+// this needs to be AFTER running mongoose.connect
+const Book = require('./models/Book');
 
 app.get('/', (request, response) => {
   response.send('success!');
+});
+
+app.get('/books', (req, res) => {
+  // get all the books from the database
+  Book.find((err, databaseRes) => {
+    // send them in the response
+    res.send(databaseRes);
+  });
 });
 
 
