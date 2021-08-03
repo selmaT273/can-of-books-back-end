@@ -8,8 +8,14 @@ const bookSchema = new Schema({
   status: String,
 })
 
+const userSchema = new Schema({
+  email: String,
+  // the data type for books is an array of bookSchema
+  books: [bookSchema],
+})
+
 // make a model out of the schema
-var Book = mongoose.model('Book', bookSchema);
+var User = mongoose.model('User', userSchema);
 
 // export the model
-module.exports = Book;
+module.exports = User;
