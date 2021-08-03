@@ -14,6 +14,13 @@ mongoose.connect('mongodb://localhost:27017/canofbooks', {useNewUrlParser: true,
 // this needs to be AFTER running mongoose.connect
 const Book = require('./models/Book');
 
+// seed the database with a book
+const myBook = new Book({ name: 'HP', description: 'Wizard', status: 'unavailable'});
+myBook.save(function (err) {
+  if (err) return console.log(err);
+  else console.log('saved the book');
+});
+
 app.get('/', (request, response) => {
   response.send('success!');
 });
