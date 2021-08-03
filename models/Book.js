@@ -6,16 +6,9 @@ const bookSchema = new Schema({
   name: String,
   description: String,
   status: String,
-})
+});
 
-const userSchema = new Schema({
-  email: String,
-  // the data type for books is an array of bookSchema
-  books: [bookSchema],
-})
-
-// make a model out of the schema
-var User = mongoose.model('User', userSchema);
+var Book = mongoose.model('Book', bookSchema);
 
 // export the model
-module.exports = User;
+module.exports = [Book, bookSchema];

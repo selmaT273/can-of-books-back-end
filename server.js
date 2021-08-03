@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3001;
 mongoose.connect('mongodb://localhost:27017/canofbooks', {useNewUrlParser: true, useUnifiedTopology: true});
 
 // this needs to be AFTER running mongoose.connect
-const User = require('./models/Book');
+const User = require('./models/User');
 
 // seed the database with a book
 const myUser = new User({ email: 'thisisanemail', books: [{name: 'The Giver', description: 'good', status: 'available'}]});
