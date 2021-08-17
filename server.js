@@ -34,8 +34,8 @@ app.get('/all', (req, res) => {
 });
 
 app.get('/books', (req, res) => {
-  // when front end is sending req, refactor to User.find({email: `${req.body.JWToken}`);
-  User.find({email: 'booooo'}, (err, databaseRes) => {
+    // when front end is sending req, refactor to User.find({email: `${req.body.JWToken}`);
+  User.find({email: req.query.email}, (err, databaseRes) => {
     res.send(databaseRes);
   });
 })
