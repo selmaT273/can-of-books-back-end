@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 require('dotenv').config();
 
@@ -15,7 +16,7 @@ mongoose.connect('mongodb://localhost:27017/canofbooks', {useNewUrlParser: true,
 const User = require('./models/User');
 
 // seed the database with a book
-const myUser = new User({ email: 'booooo', books: [{name: 'Halloween', description: 'a great tale', status: 'unavailable'}]});
+// const myUser = new User({ email: 'stacey.teltser@gmail.com', books: [{name: 'If You Then Me', description: 'an awesome book', status: 'available'}, {name: 'Phoenix Project', description: 'must read', status: 'unavailable'}]});
 // myUser.save(function (err) {
 //   if (err) return console.log(err);
 //   else console.log('saved the user');
@@ -34,10 +35,12 @@ app.get('/all', (req, res) => {
 });
 
 app.get('/books', (req, res) => {
-    // when front end is sending req, refactor to User.find({email: `${req.body.JWToken}`);
-  User.find({email: req.query.email}, (err, databaseRes) => {
-    res.send(databaseRes);
-  });
+  const token = req.headers.authorization.split(' ')[1];
+  jwt.verify(token, {}, async function(err, user){
+    User.find({email: req.query.email}, (err, databaseRes) => {
+      res.send(databaseRes);
+    });
+  })
 })
 
 app.listen(PORT, () => console.log(`PORT is listening on ${PORT}`));
