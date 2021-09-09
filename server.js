@@ -29,6 +29,8 @@ mongoose.connect(MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true})
 
 // this needs to be AFTER running mongoose.connect
 const User = require('./models/User');
+const Book = require('./models/Book');
+const { request } = require('express');
 
 // seed the database with a book
 // const myUser = new User({ email: 'stacey.teltser@gmail.com', books: [{name: 'If You Then Me', description: 'an awesome book', status: 'available'}, {name: 'Phoenix Project', description: 'must read', status: 'unavailable'}]});
@@ -52,9 +54,17 @@ app.get('/all', (req, res) => {
 app.get('/books', (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   jwt.verify(token, getKey, {}, async function(err, user){
-    User.find({email: req.query.email}, (err, databaseRes) => {
-      res.send(databaseRes);
-    });
+    if(err) {
+      res.send('invalid token');
+    } else {
+    const email = request.query.email;
+    Book.find({email}, (err, databaseRes) => {
+      if(err) {
+        return console.error(err);
+      } else {
+        res.send(databaseRes);
+      }
+    })};
   })
 })
 
