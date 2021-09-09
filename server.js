@@ -5,12 +5,27 @@ const jwt = require('jsonwebtoken');
 
 require('dotenv').config();
 
+
 const app = express();
 app.use(cors());
 
-const PORT = process.env.PORT || 3001;
+const jwksClient = require('jwks-rsa');
 
-mongoose.connect('mongodb://localhost:27017/canofbooks', {useNewUrlParser: true, useUnifiedTopology: true});
+const client = jwksClient({
+  jwksUri: 'dev-24oeotkz.us.auth0.com',
+});
+
+function getKey(header, callback) {
+  client.getSigningKey(header.kid, function (err, key) {
+    const signingKey = key.publicKey || key.rsaPublicKey;
+    callback(null, signingKey);
+  });
+}
+
+const PORT = process.env.PORT || 3001;
+const MONGODB_URI = process.env.MONGODB_URI;
+
+mongoose.connect(MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true});
 
 // this needs to be AFTER running mongoose.connect
 const User = require('./models/User');
@@ -36,7 +51,7 @@ app.get('/all', (req, res) => {
 
 app.get('/books', (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
-  jwt.verify(token, {}, async function(err, user){
+  jwt.verify(token, getKey, {}, async function(err, user){
     User.find({email: req.query.email}, (err, databaseRes) => {
       res.send(databaseRes);
     });
